@@ -26,7 +26,8 @@ try {
 }
 
 // const ADMIN_CORS = process.env.ADMIN_CORS || "http://localhost:7000,http://localhost:7001"
-const ADMIN_CORS = process.env.ADMIN_CORS || "http://localhost:9000"
+// const ADMIN_CORS = process.env.ADMIN_CORS || "http://localhost:9000"
+const ADMIN_CORS = 'https://luxuryverse-backend.popovtech.com'
 const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000"
 const DATABASE_URL = process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default"
 
@@ -38,6 +39,7 @@ module.exports = {
     database_type: "postgres",
     store_cors: STORE_CORS,
     admin_cors: ADMIN_CORS,
+    redis_url: process.env.REDIS_URL,
     database_extra:
       process.env.NODE_ENV !== "development"
         ? { ssl: { rejectUnauthorized: false } }
@@ -53,15 +55,6 @@ module.exports = {
       },
     },
     {
-      resolve: `medusa-plugin-sendgrid`,
-      options: {
-        api_key: process.env.SENDGRID_API_KEY,
-        from: process.env.SENDGRID_FROM,
-        order_placed_template: 
-          process.env.SENDGRID_ORDER_PLACED_ID,
-      },
-    },
-    {
       resolve: "@medusajs/admin",
       /** @type {import('@medusajs/admin').PluginOptions} */
       options: {
@@ -71,27 +64,27 @@ module.exports = {
         },
       },
     },
-    {
-      resolve: `medusa-plugin-algolia`,
-      options: {
-        applicationId: process.env.ALGOLIA_APP_ID || "H5TUZTZ3T8",
-        adminApiKey: process.env.ALGOLIA_ADMIN_API_KEY || "5bd929fe0c5b9a09583feab9bb3d8e09",
-        settings: {
-          products: {
-            indexSettings: {
-              searchableAttributes: ["title", "description","subtitle"],
-              attributesToRetrieve: [
-                "id",
-                "title",
-                "subtitle",
-                "description",
-                "handle",
-                "options",
-                "images",
-              ],
-            },},},  
-      },
-    },
+    // {
+    //   resolve: `medusa-plugin-algolia`,
+    //   options: {
+    //     applicationId: process.env.ALGOLIA_APP_ID || "H5TUZTZ3T8",
+    //     adminApiKey: process.env.ALGOLIA_ADMIN_API_KEY || "5bd929fe0c5b9a09583feab9bb3d8e09",
+    //     settings: {
+    //       products: {
+    //         indexSettings: {
+    //           searchableAttributes: ["title", "description","subtitle"],
+    //           attributesToRetrieve: [
+    //             "id",
+    //             "title",
+    //             "subtitle",
+    //             "description",
+    //             "handle",
+    //             "options",
+    //             "images",
+    //           ],
+    //         },},},  
+    //   },
+    // },
   ],
   modules: {
     eventBus: {
@@ -103,7 +96,8 @@ module.exports = {
     cacheService: {
       resolve: '@medusajs/cache-redis',
       options: {
-        redisUrl: process.env.REDIS_URL
+        redisUrl: process.env.REDIS_URL,
+        ttl: 30,
       }
     }
   },
